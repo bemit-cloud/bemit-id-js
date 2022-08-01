@@ -1,0 +1,103 @@
+{
+    "name": "@bemit/cloud-id",
+    "version": "0.1.1",
+    "description": "",
+    "homepage": "https://bemit.codes",
+    "author": {
+        "name": "bemit",
+        "url": "https://bemit.codes"
+    },
+    "contributors": [
+        {
+            "name": "Michael Becker",
+            "url": "https://i-am-digital.eu"
+        }
+    ],
+    "license": "MIT",
+    "keywords": [
+        "oauth"
+    ],
+    "engines": {
+        "node": ">=14"
+    },
+    "type": "module",
+    "exports": {
+        "./AuthValidator": "./build/AuthValidator/index.js",
+        "./IdManager": "./build/IdManager/index.js",
+        "./IdClientAuth": "./build/IdClientAuth/index.js",
+        "./ResourceClient": "./build/ResourceClient/index.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/bemit-cloud/bemit-id-js.git"
+    },
+    "scripts": {
+        "prebuild": "npm run clean-dist && npm run test",
+        "build": "cross-env NODE_ENV=production CI=true npm run build-babel",
+        "postbuild": "npm run dtsgen",
+        "build-babel": "babel src --no-comments --extensions .ts --extensions .tsx --extensions .js --extensions .jsx --ignore **/*.d.ts --ignore **/*.test.ts --out-dir build",
+        "clean-dist": "rimraf build",
+        "test": "jest -c=\"jest.config.ts\" --passWithNoTests",
+        "tdd": "npm test -- --watch --watchman --coverage=false",
+        "dtsgen": "tsc -d --emitDeclarationOnly --pretty && merge-dirs build/dts build && rm -rf build/dts && rimraf build/**/*.test.*"
+    },
+    "peerDependencies": {
+        "@bemit/redis": "~0.0.7",
+        "redis": "^4.0.2",
+        "superagent": "^7.1.1"
+    },
+    "dependencies": {
+        "jsonwebtoken": "^8.5.1"
+    },
+    "devDependencies": {
+        "@bemit/redis": "~0.0.7",
+        "@types/jsonwebtoken": "^8.5.8",
+        "@types/superagent": "^4.1.14",
+        "superagent": "^7.1.1",
+        "@babel/cli": "^7.14.5",
+        "@babel/core": "^7.14.6",
+        "@babel/eslint-parser": "^7.18.2",
+        "@babel/node": "^7.14.7",
+        "@babel/plugin-proposal-class-properties": "^7.14.5",
+        "@babel/plugin-proposal-export-default-from": "^7.14.5",
+        "@babel/plugin-proposal-export-namespace-from": "^7.14.5",
+        "@babel/plugin-proposal-nullish-coalescing-operator": "^7.14.5",
+        "@babel/plugin-proposal-object-rest-spread": "^7.14.7",
+        "@babel/plugin-proposal-optional-chaining": "^7.14.5",
+        "@babel/plugin-syntax-dynamic-import": "^7.8.3",
+        "@babel/plugin-transform-modules-commonjs": "^7.14.5",
+        "@babel/plugin-transform-runtime": "^7.14.5",
+        "@babel/preset-env": "^7.14.7",
+        "@babel/preset-typescript": "^7.16.0",
+        "@jest/types": "^28.1.3",
+        "@typescript-eslint/eslint-plugin": "^5.6.0",
+        "@typescript-eslint/parser": "^5.6.0",
+        "babel-jest": "^28.1.3",
+        "babel-loader": "^8.1.0",
+        "babel-plugin-syntax-dynamic-import": "^6.18.0",
+        "babel-plugin-transform-export-extensions": "^6.22.0",
+        "cross-env": "^7.0.3",
+        "cross-spawn": "^7.0.3",
+        "eslint": "^8.19.0",
+        "eslint-plugin-deprecation": "^1.2.1",
+        "eslint-plugin-only-warn": "^1.0.2",
+        "eslint-plugin-react": "^7.24.0",
+        "jest": "^28.1.3",
+        "jest-runner-eslint": "^1.0.0",
+        "merge-dirs": "^0.2.1",
+        "redis": "^4.0.2",
+        "rimraf": "^3.0.0",
+        "symlink-dir": "^5.0.1",
+        "ts-jest": "^28.0.7",
+        "ts-node": "^10.9.1",
+        "typescript": "^4.2.0"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "jest-runner-eslint": {
+        "cliOptions": {
+            "maxWarnings": 0
+        }
+    }
+}

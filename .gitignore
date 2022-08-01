@@ -1,0 +1,13 @@
+.env
+
+/build
+
+node_modules
+
+/coverage
+
+.DS_Store
+
+.idea/
+*.iml
+*.iws
