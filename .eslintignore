@@ -1,0 +1,4 @@
+jest.config.*
+babel.config.*
+/build
+node_modules
