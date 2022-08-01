@@ -1,6 +1,6 @@
 {
     "name": "@bemit/cloud-id",
-    "version": "0.1.1",
+    "version": "0.1.2",
     "description": "",
     "homepage": "https://bemit.codes",
     "author": {
@@ -22,10 +22,10 @@
     },
     "type": "module",
     "exports": {
-        "./AuthValidator": "./build/AuthValidator/index.js",
-        "./IdManager": "./build/IdManager/index.js",
-        "./IdClientAuth": "./build/IdClientAuth/index.js",
-        "./ResourceClient": "./build/ResourceClient/index.js"
+        "./AuthValidator": "./AuthValidator/index.js",
+        "./IdManager": "./IdManager/index.js",
+        "./IdClientAuth": "./IdClientAuth/index.js",
+        "./ResourceClient": "./ResourceClient/index.js"
     },
     "repository": {
         "type": "git",
