@@ -1,6 +1,6 @@
 import superagent, { SuperAgent, SuperAgentRequest } from 'superagent'
 import jwt, { Algorithm } from 'jsonwebtoken'
-import { RedisManager } from '@bemit/redis/RedisManager'
+import { RedisConnection } from '@bemit/redis/RedisConnection'
 
 export interface AbstractIdValidationStrategy {
     type: string
@@ -25,13 +25,13 @@ export class IdManager {
     protected readonly host?: string
     protected readonly cacheExpire: number
     protected readonly cacheExpireMemory: number
-    protected readonly redisManager: RedisManager
+    protected readonly redis: RedisConnection
     protected readonly validation?: IdValidationStrategy
     protected cachedVerifyKey: undefined | { ts: number, key: string } = undefined
 
     constructor(init: {
         host?: string
-        redisManager: () => RedisManager
+        redis: RedisConnection
         // seconds how long the verification-key is cached in redis
         cacheExpire?: number
         // seconds how long the verification-key is cached in memory
@@ -42,7 +42,7 @@ export class IdManager {
         this.cacheExpire = init.cacheExpire || 360
         this.cacheExpireMemory = init.cacheExpireMemory || 180
         this.validation = init.validation
-        this.redisManager = init.redisManager()
+        this.redis = init.redis
     }
 
     public getHost(): string {
@@ -70,7 +70,7 @@ export class IdManager {
             return this.cachedVerifyKey.key
         }
         const key = 'id:' + 'vk:' + Buffer.from(this.getHost()).toString('base64')
-        const redis = await this.redisManager.client()
+        const redis = await this.redis.client()
         const verifyKey = await redis.get(key)
         if(verifyKey) {
             this.cachedVerifyKey = {ts: now, key: verifyKey}

@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { IdManager } from '@bemit/cloud-id/IdManager'
-import { RedisManager } from '@bemit/redis/RedisManager'
+import { RedisConnection } from '@bemit/redis/RedisConnection'
 
 export interface IdAuthCredentialsBase {
     type: string
@@ -22,7 +22,7 @@ export interface IdAuthCredentialsOauth extends IdAuthCredentialsBase {
 export type IdAuthCredentials = IdAuthCredentialsOauth | IdAuthCredentialsApiToken
 
 export class IdClientAuth {
-    protected readonly redisManager: RedisManager
+    protected readonly redis: RedisConnection
     protected readonly idManager: IdManager
     protected readonly cacheExpire: number
     protected readonly encSecret: string
@@ -30,14 +30,14 @@ export class IdClientAuth {
     constructor(init: {
         cacheExpire: number
         encSecret: string
-        redisManager: () => RedisManager
-        idManager: () => IdManager
+        redis: RedisConnection
+        idManager: IdManager
     }) {
         if(init.encSecret.length !== 32) {
             throw new Error('IdClientAuth encSecret invalid length, must be 32')
         }
-        this.idManager = init.idManager()
-        this.redisManager = init.redisManager()
+        this.idManager = init.idManager
+        this.redis = init.redis
         this.cacheExpire = init.cacheExpire
         this.encSecret = init.encSecret
     }
@@ -130,7 +130,7 @@ export class IdClientAuth {
                 // @ts-ignore
                 credentials.type
         const key = 'id:' + 'auth:' + crypto.createHash('sha512').update(credKey).digest('hex')
-        const redis = await this.redisManager.client()
+        const redis = await this.redis.client()
         const authData = await redis.get(key)
         if(authData) {
             return JSON.parse(this.decrypt(authData))

@@ -1,24 +1,24 @@
 import superagent from 'superagent'
-import { RedisManager } from '@bemit/redis/RedisManager'
+import { RedisConnection } from '@bemit/redis/RedisConnection'
 
 export class ResourceClient {
     protected readonly host: string
     protected readonly cacheExpire: number
-    protected readonly redisManager: RedisManager
+    protected readonly redis: RedisConnection
 
     constructor(init: {
         host: string
-        redisManager: () => RedisManager
+        redis: RedisConnection
         cacheExpire: number
     }) {
         this.host = init.host
         this.cacheExpire = init.cacheExpire
-        this.redisManager = init.redisManager()
+        this.redis = init.redis
     }
 
     public async getResource(project: string, service: string, resource: string): Promise<any | undefined> {
         const key = 'rc:' + 'res:' + Buffer.from(project + '/' + service + '/' + resource).toString('base64')
-        const redis = await this.redisManager.client()
+        const redis = await this.redis.client()
         let resourceData = await redis.get(key)
         if(resourceData) {
             return JSON.parse(resourceData)
