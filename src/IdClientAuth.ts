@@ -1,6 +1,6 @@
 import crypto from 'crypto'
 import { IdManager } from '@bemit/cloud-id/IdManager'
-import { RedisConnection } from '@bemit/redis/RedisConnection'
+import { AuthCacheAdapter, AuthCacheDisabledAdapter } from '@bemit/cloud-id/AuthCache'
 
 export interface IdAuthCredentialsBase {
     type: string
@@ -10,6 +10,7 @@ export interface IdAuthCredentialsApiToken extends IdAuthCredentialsBase {
     type: 'api_token'
     name: string
     secret: string
+    audience?: string
 }
 
 export interface IdAuthCredentialsOauth extends IdAuthCredentialsBase {
@@ -22,7 +23,7 @@ export interface IdAuthCredentialsOauth extends IdAuthCredentialsBase {
 export type IdAuthCredentials = IdAuthCredentialsOauth | IdAuthCredentialsApiToken
 
 export class IdClientAuth {
-    protected readonly redis: RedisConnection
+    protected readonly cacheAdapter: AuthCacheAdapter
     protected readonly idManager: IdManager
     protected readonly cacheExpire: number
     protected readonly encSecret: string
@@ -30,14 +31,14 @@ export class IdClientAuth {
     constructor(init: {
         cacheExpire: number
         encSecret: string
-        redis: RedisConnection
         idManager: IdManager
+        cacheAdapter?: AuthCacheAdapter
     }) {
         if(init.encSecret.length !== 32) {
             throw new Error('IdClientAuth encSecret invalid length, must be 32')
         }
         this.idManager = init.idManager
-        this.redis = init.redis
+        this.cacheAdapter = init.cacheAdapter || new AuthCacheDisabledAdapter()
         this.cacheExpire = init.cacheExpire
         this.encSecret = init.encSecret
     }
@@ -52,6 +53,7 @@ export class IdClientAuth {
             .send({
                 name: credentials.name,
                 secret: credentials.secret,
+                aud: credentials.audience,
             })
             .then((r) => {
                 if(r.statusCode === 200) {
@@ -129,17 +131,18 @@ export class IdClientAuth {
             credentials.type === 'oauth' ? credentials.client_id :
                 // @ts-ignore
                 credentials.type
-        const key = 'id:' + 'auth:' + crypto.createHash('sha512').update(credKey).digest('hex')
-        const redis = await this.redis.client()
-        const authData = await redis.get(key)
+        const authData = await this.cacheAdapter.get<string>('oauth_credentials', credKey)
         if(authData) {
             return JSON.parse(this.decrypt(authData))
         }
         const token = await this.authToken(credentials)
         if(typeof token === 'object') {
-            await redis.set(key, this.encrypt(JSON.stringify(token)), {
-                EX: this.cacheExpire,
-            })
+            await this.cacheAdapter.persist(
+                'oauth_credentials', credKey, this.encrypt(JSON.stringify(token)),
+                {
+                    expire: this.cacheExpire,
+                },
+            )
             return token
         }
         return undefined
