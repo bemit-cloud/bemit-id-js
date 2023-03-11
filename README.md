@@ -7,7 +7,12 @@
 ![Typed](https://flat.badgen.net/badge/icon/Typed?icon=typescript&label&labelColor=blue&color=555555)
 
 ```shell
-npm i --save @bemit/cloud-id @bemit/redis redis superagent @types/jsonwebtoken @types/superagent
+npm i --save @bemit/cloud-id @bemit/redis redis superagent \
+  @types/jsonwebtoken @types/superagent
+
+# or without redis cache:
+npm i --save @bemit/cloud-id superagent \
+  @types/jsonwebtoken @types/superagent
 ```
 
 > ESM only package
