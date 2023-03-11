@@ -23,6 +23,7 @@
     "type": "module",
     "exports": {
         "./AuthCache": "./AuthCache.js",
+        "./AuthCacheMemory": "./AuthCacheMemory.js",
         "./AuthCacheRedis": "./AuthCacheRedis.js",
         "./AuthRuleError": "./AuthRuleError.js",
         "./IdClientAuth": "./IdClientAuth.js",
