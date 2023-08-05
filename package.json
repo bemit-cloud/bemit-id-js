@@ -1,6 +1,6 @@
 {
     "name": "@bemit/cloud-id",
-    "version": "0.3.1",
+    "version": "0.3.2",
     "description": "",
     "homepage": "https://bemit.codes",
     "author": {
@@ -25,7 +25,6 @@
         "./AuthCache": "./AuthCache.js",
         "./AuthCacheMemory": "./AuthCacheMemory.js",
         "./AuthCacheRedis": "./AuthCacheRedis.js",
-        "./AuthRuleError": "./AuthRuleError.js",
         "./IdClientAuth": "./IdClientAuth.js",
         "./IdManager": "./IdManager.js",
         "./ResourceClient": "./ResourceClient.js"
