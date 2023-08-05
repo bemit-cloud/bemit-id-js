@@ -82,8 +82,8 @@ export class IdManager {
             validationKey = await this.cacheAdapter.get<string>('id_keys', key)
             if(validationKey) {
                 await this.cacheAdapterMemory.persist('id_keys', key, validationKey, {expire: this.cacheExpireMemory})
+                return validationKey
             }
-            return validationKey
         }
         validationKey = await this.apiClient()
             .get(this.getHost() + keyUrl)

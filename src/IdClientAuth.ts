@@ -67,11 +67,11 @@ export class IdClientAuth {
             })
     }
 
-    public async authTokenOauth(credentials: IdAuthCredentialsOauth): Promise<{
+    public async authTokenOauth<AT extends {
         access_token: string
-        expires_in: number
+        expires_in?: number
         token_type?: string
-    } | undefined> {
+    }>(credentials: IdAuthCredentialsOauth): Promise<AT | undefined> {
         return this.idManager.apiClient()
             .post(this.idManager.getHost() + '/oauth/token')
             .send({
@@ -92,16 +92,16 @@ export class IdClientAuth {
             })
     }
 
-    public async authToken(credentials: IdAuthCredentials): Promise<{
+    public async authToken<AT extends {
         access_token: string
-        expires_in: number
+        expires_in?: number
         token_type?: string
-    } | undefined> {
+    }>(credentials: IdAuthCredentials): Promise<AT | undefined> {
         switch(credentials.type) {
             case 'api_token':
-                return this.authTokenApiToken(credentials)
+                return await this.authTokenApiToken(credentials) as AT | undefined
             case 'oauth':
-                return this.authTokenOauth(credentials)
+                return await this.authTokenOauth(credentials) as AT | undefined
             default:
                 // @ts-ignore
                 throw new Error('authToken for `' + credentials.type + '` credentials not supported')
@@ -124,9 +124,7 @@ export class IdClientAuth {
         return decrypted.toString()
     }
 
-    public async auth(credentials: IdAuthCredentials): Promise<{
-        access_token: string
-    } | undefined> {
+    public async auth<AT extends { access_token: string }>(credentials: IdAuthCredentials): Promise<AT | undefined> {
         const credKey = credentials.type === 'api_token' ? credentials.name :
             credentials.type === 'oauth' ? credentials.client_id :
                 // @ts-ignore
@@ -135,7 +133,7 @@ export class IdClientAuth {
         if(authData) {
             return JSON.parse(this.decrypt(authData))
         }
-        const token = await this.authToken(credentials)
+        const token = await this.authToken<AT>(credentials)
         if(typeof token === 'object') {
             await this.cacheAdapter.persist(
                 'oauth_credentials', credKey, this.encrypt(JSON.stringify(token)),
