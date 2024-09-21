@@ -1,4 +1,4 @@
-import superagent, { SuperAgent, SuperAgentRequest } from 'superagent'
+import superagent, { Request, SuperAgent, SuperAgentRequest } from 'superagent'
 import jwt, { Algorithm, SignOptions, VerifyOptions } from 'jsonwebtoken'
 import { AuthCacheAdapter, AuthCacheDisabledAdapter } from '@bemit/cloud-id/AuthCache'
 import { AuthCacheMemoryAdapter } from '@bemit/cloud-id/AuthCacheMemory'
@@ -67,7 +67,7 @@ export class IdManager {
         return this.validation
     }
 
-    public apiClient(acceptText?: boolean): SuperAgent<SuperAgentRequest> {
+    public apiClient(acceptText?: boolean): SuperAgent<SuperAgentRequest> & Request {
         return superagent
             .agent()
             .set('Accept', acceptText ? 'text/plain' : 'application/json')

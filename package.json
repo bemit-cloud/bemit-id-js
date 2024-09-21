@@ -1,6 +1,6 @@
 {
     "name": "@bemit/cloud-id",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "description": "",
     "homepage": "https://bemit.codes",
     "author": {
@@ -31,14 +31,14 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/bemit-cloud/bemit-id-js.git"
+        "url": "git+https://github.com/bemit-cloud/bemit-id-js.git"
     },
     "scripts": {
         "prebuild": "npm run clean-dist && npm run test",
         "build": "cross-env NODE_ENV=production CI=true npm run build-babel",
         "postbuild": "npm run dtsgen",
         "build-babel": "babel src --no-comments --extensions .ts --extensions .tsx --extensions .js --extensions .jsx --ignore **/*.d.ts --ignore **/*.test.ts --out-dir build",
-        "clean-dist": "rimraf build",
+        "clean-dist": "rimraf build && rimraf coverage",
         "test": "jest -c=\"jest.config.ts\" --passWithNoTests",
         "tdd": "npm test -- --watch --watchman --coverage=false",
         "dtsgen": "tsc -d --emitDeclarationOnly --pretty && cp -R build/dts/* build && rm -rf build/dts && rimraf build/**/*.test.*"
@@ -46,7 +46,7 @@
     "peerDependencies": {
         "@bemit/redis": "~0.1.0-alpha.0",
         "redis": "^4.0.2",
-        "superagent": "^7.1.5 || ^8.0.0"
+        "superagent": "^7.1.5 || ^8.0.0 || ^9.0.0 || ^10.0.0"
     },
     "peerDependenciesMeta": {
         "redis": {
@@ -61,34 +61,33 @@
     },
     "devDependencies": {
         "@bemit/redis": "~0.1.0-alpha.0",
-        "@types/jsonwebtoken": "^9.0.1",
+        "@types/jsonwebtoken": "^9.0.7",
         "@types/superagent": "^4.1.15",
-        "superagent": "^8.0.0",
-        "@babel/cli": "^7.14.5",
-        "@babel/core": "^7.14.6",
-        "@babel/eslint-parser": "^7.18.2",
-        "@babel/node": "^7.14.7",
-        "@babel/preset-env": "^7.14.7",
-        "@babel/preset-typescript": "^7.16.0",
-        "@jest/types": "^28.1.3",
-        "@typescript-eslint/eslint-plugin": "^5.6.0",
-        "@typescript-eslint/parser": "^5.6.0",
-        "babel-jest": "^28.1.3",
-        "babel-loader": "^8.1.0",
+        "superagent": "^10.1.0",
+        "@babel/cli": "^7.25.6",
+        "@babel/core": "^7.25.2",
+        "@babel/eslint-parser": "^7.25.1",
+        "@babel/node": "^7.25.0",
+        "@babel/preset-env": "^7.25.4",
+        "@babel/preset-typescript": "^7.24.7",
+        "@jest/types": "^29.6.3",
+        "@typescript-eslint/eslint-plugin": "^8.6.0",
+        "@typescript-eslint/parser": "^8.6.0",
+        "babel-jest": "^29.7.0",
+        "babel-loader": "^9.2.1",
         "cross-env": "^7.0.3",
         "cross-spawn": "^7.0.3",
-        "eslint": "^8.19.0",
-        "eslint-plugin-deprecation": "^1.2.1",
-        "eslint-plugin-only-warn": "^1.0.2",
-        "eslint-plugin-react": "^7.24.0",
-        "jest": "^28.1.3",
-        "jest-runner-eslint": "^1.0.0",
+        "eslint": "^8.57.1",
+        "eslint-plugin-deprecation": "^3.0.0",
+        "eslint-plugin-only-warn": "^1.1.0",
+        "eslint-plugin-react": "^7.36.1",
+        "jest": "^29.7.0",
+        "jest-runner-eslint": "^2.2.0",
         "redis": "^4.0.2",
         "rimraf": "^3.0.0",
-        "symlink-dir": "^5.0.1",
-        "ts-jest": "^28.0.7",
-        "ts-node": "^10.9.1",
-        "typescript": "^4.2.0"
+        "ts-jest": "^29.2.5",
+        "ts-node": "^10.9.2",
+        "typescript": "^4.9.5"
     },
     "publishConfig": {
         "access": "public"
