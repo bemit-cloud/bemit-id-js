@@ -5,9 +5,9 @@ env:
 
 on:
     push:
-        branches: [main, develop]
+        branches: [ main, develop ]
     pull_request:
-        branches: [main, develop]
+        branches: [ main, develop ]
     create:
         tags:
             - '[0-9]+.[0-9]+.[0-9]+*'
@@ -20,7 +20,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                node-version: [14.x]
+                node-version: [ 18.x ]
         steps:
             -   uses: actions/checkout@v2
             -   name: Set Branch
@@ -63,6 +63,7 @@ jobs:
                     cp package.json build/
                     cp README.md build/
                     cp LICENSE build/
-                    npm publish build
+                    cd build
+                    npm publish
                 env:
                     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

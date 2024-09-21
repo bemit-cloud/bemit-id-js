@@ -26,15 +26,15 @@ const base: Partial<Config.InitialOptions> = {
         'json',
         'node',
     ],
-    collectCoverage: true,
     coveragePathIgnorePatterns: [
         '(tests/.*.mock).(jsx?|tsx?|ts?|js?)$',
     ],
-    verbose: true,
 }
 
 const config: Config.InitialOptions = {
     ...base,
+    collectCoverage: true,
+    verbose: true,
     projects: [{
         displayName: 'test',
         ...base,
